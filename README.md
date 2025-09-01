@@ -1,2 +1,11 @@
 # Lung-Diseases-Classification-ResNet-18-ResNet-50-VGG-16-19-Swin-Transformer-
 This project benchmarks four deep-learning backbones for multi-class chest X-ray classification in a unified pipeline: ResNet-18, ResNet-50, VGG-16/19, and a Swin Transformer variant.
+All notebooks follow the same steps so results are directly comparable: they expect an ImageNet-style directory layout (data/{train,val,test}/{class_name}/image.jpg), apply consistent preprocessing (resize/crop to 224×224 or 256→224 center crop, convert to tensor, ImageNet mean/std normalization), and use the same train/val/test split. Each model is initialized with ImageNet weights for transfer learning, first training the classifier head while freezing early layers, then optionally fine-tuning deeper blocks. Standard augmentations (random horizontal flip, small rotations/affine, light color jitter) improve generalization; class imbalance can be mitigated with a weighted cross-entropy or a WeightedRandomSampler. Training uses Adam/SGD with a cosine or step LR scheduler, early stopping on validation loss, and checkpoints for the best epoch. Evaluation is uniform across notebooks: overall accuracy, macro precision/recall/F1, per-class metrics, confusion matrix, and (optionally) macro ROC–AUC by one-vs-rest. Each notebook also produces learning curves and example predictions; you can enable Grad-CAM to visualize salient regions for model interpretability. Results are summarized so you can compare capacity/speed trade-offs (e.g., ResNet-18 for speed, ResNet-50/VGG-19 for capacity, Swin for strong feature modeling on complex cases). Use the notebooks as follows:
+
+Lung Dieseases Classification using resnet-18.ipynb — lightweight baseline CNN; fastest to train/infer; good starting point and ablation anchor.
+
+Lung Dieseases Classification using resnet50.ipynb — deeper residual network; stronger representations, typically higher recall on difficult classes.
+
+Lung Dieseases Classification using vgg16-and-vgg19.ipynb — classical VGGs for comparison; larger parameter counts; useful to test the effect of residual connections vs. plain ConvNets.
+
+Lung Diesease Classification Using Swin transformer.ipynb — windowed-attention Vision Transformer via timm; often best at capturing global patterns; may require more tuning/VRAM.
